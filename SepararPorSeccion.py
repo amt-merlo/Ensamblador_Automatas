@@ -10,7 +10,7 @@ def separarPorSeccion(direccionArchivo):
 
     i = 0
     lista = lista[1:len(lista)]
-    for i in range(len(lista)-1):
+    for i in range(len(lista)):
 
             lista[i] = "." + lista[i]
             i += 1
