@@ -1,18 +1,4 @@
-
-
 import re
-
-"""
-tipo_inst = '(a(d{2}|dc|nd))\s'
-tipo_inst2 = '(ld|st)\s'
-reg64_32 = '[Rre]((([abcd]x)|([sd]i)|([bs]p))|(([89]|(1[0-5]))d?))'
-reg16_8 = '([abcd][xl])|((([sd]i)|([bs]p))l?)|([Rr]([89]|1[0-5])[wb])'
-registros ='(('+reg64_32+')|('+reg16_8+'))'
-re_final = re.compile( '(' + tipo_inst + registros + ',\s?' + registros + ',?\s?' + registros + '?)|('+ tipo_inst2 + registros + ',\s?' + registros +')')
-print( '(' + tipo_inst + registros + ',\s?' + registros + ',?\s?' + registros + '?)|('+ tipo_inst2 + registros + ',\s?' + registros +')'
-"""
-
-
 
 #numeros con 0 (Allison)
 def numeros(cadena):
@@ -126,12 +112,6 @@ def program(cadena):
         return True
     else:
         return False
-        
-
-            
-    
-
-
 
 
 #Instrucción de dos registros (Fabrizio)
@@ -194,8 +174,6 @@ def insDosReg(cadena):
         return true
 
 
-
-
 #Aut numeros sin cero (Kenneth)
 
 def numeros_0(caracter):
@@ -237,7 +215,6 @@ def numeros_5(caracter):
 # evalua tanto mayusculas como minusculas
         
 def letras_F(caracter):
-    
     estado=1
     if estado == 1:
         if letras(caracter):
@@ -265,5 +242,127 @@ def letras_F(caracter):
     else:
         return False
 
-
 print(program(".program 23,k5"))
+
+
+def seccionConst(cadena):
+    estado = 1
+    for i in range(0, len(cadena)):
+
+        if estado == 1:
+            if cadena[0:6] == ".const":
+                estado = 2
+            else:
+                return False
+
+        elif estado == 2:
+            if not caracter(cadena[7]):
+                return False
+            for x in range(i, len(cadena)):
+                if cadena[x] == "=":
+                    igual = x + 1
+                    estado = 3
+
+                if "=" not in cadena:
+                    return False
+
+        elif estado == 3:
+            if numeros(cadena[igual:len(cadena) + 1]):
+                estado = 3
+            elif hexadecimal(cadena[igual:len(cadena) + 1]):
+                estado = 4
+            else:
+                return False
+
+
+        elif estado == 4:
+            if hexadecimal(cadena[igual:len(cadena) + 1]):
+                estado = 4
+            else:
+                return False
+    if estado == 3 or estado == 4:
+        return True
+    else:
+        return False
+
+def hexadecimal(cadena):
+    estado = 1
+    for i in range(2, len(cadena)):
+        actual = cadena[i]
+
+        if estado == 1:
+            if cadena[0:2] == "0x":
+                estado = 2
+            else:
+                return False
+
+        elif estado == 2:
+            if numeros(actual):
+                estado = 2
+
+            elif letras_F(actual):
+                estado = 3
+
+            else:
+                return False
+
+
+        elif estado == 3:
+            if numeros(actual):
+                estado = 2
+
+            elif letras_F(actual):
+                estado = 3
+            else:
+                return False
+
+    if estado == 2 or estado == 3:
+        return True
+    else:
+        return False
+
+
+def operacion(cadena):
+    estado=1
+    punt=0
+    for i in range(0,len(cadena)):
+        if estado==1:
+            pos==punt
+            while(pos<len(cadena)):
+                if cadena[pos]==":":
+                    break
+                pos+=1
+            if caracter(cadena[:pos]):
+                estado=2
+                punt=pos+1
+            else:
+                return False
+        if estado==2:
+            if(comando(cadena[punt:])):
+                estado=3
+            else:
+                return False
+    if estado==3:
+        return True
+    else:
+        return False
+
+def comando(cadena):
+    estado=1
+    i=3
+    while i>0:
+        if estado==1:
+            if insDosReg(cadena):
+                estado=3
+            else:
+                estado=2
+        elif estado==2:
+            if insRegVar(cadena):
+                estado=3
+            else:
+                return False
+        i-=1
+    if estado==3:
+        return True
+    else:
+        return False
