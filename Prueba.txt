@@ -1,0 +1,17 @@
+.program Primer ejemplo
+;-------------------------------------------
+; Programa para ilustrar una entrada posible
+; ------------------------------------------
+.const a = 28
+	b = 0x2C3
+.text
+
+
+	ciclo_infinito:
+		ld R1,a(R0) ; Carga el puntero inicial
+		ld R2,b(R1)
+		ld R3,32(R2) ; Carga el valor verdadero
+		add R4,R3,R2
+		and R4,R4,R2
+	jmp ciclo_infinito
+	st R4,a(R0)	
