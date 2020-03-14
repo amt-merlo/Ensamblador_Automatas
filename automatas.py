@@ -486,4 +486,38 @@ def numeros_5(caracter):
     else:
         return False
 
+def text(caracter)
 
+    lista = caracter.splitlines()
+    estado = 0
+
+    i = 0
+
+    for i in range(len(lista)):
+
+        if estado == 0:
+            if lista[0] != '.text':
+                return False
+            estado == 1
+            i += 1
+
+        if estado == 1 or  estado == 2 and len(lista[i]) > 0:
+
+            estado = 1
+
+            if  lista[i][-1] == ':':
+                if !operacion(lista[i].lstrip('\t' ))):
+                    return False
+            elif !comando(lista[i].lstrip('\t' ))):
+                return False
+
+            estado = 2
+
+        else:
+            i += 1
+
+        if estado == 2:
+            return True
+        else:
+            return False
+            
