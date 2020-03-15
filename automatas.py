@@ -501,7 +501,7 @@ def text(caracter)
             estado == 1
             i += 1
 
-        if estado == 1 or  estado == 2 and len(lista[i]) > 0:
+        if (estado == 1 or  estado == 2) and len(lista[i]) > 0:
 
             estado = 1
 
@@ -512,12 +512,14 @@ def text(caracter)
                 return False
 
             estado = 2
+            
+            i += 1
 
         else:
             i += 1
 
-        if estado == 2:
-            return True
-        else:
-            return False
+    if estado == 2:
+        return True
+    else:
+        return False
             
