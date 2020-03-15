@@ -522,4 +522,92 @@ def text(caracter)
         return True
     else:
         return False
+
+
+#programa que revisa .text, .const y .program (Allison)
+
+def programa(lista):
+    estado = 1
+
+    for seccion in lista:
+
+        if estado == 1:
+            if seccion[0:8] == ".program":
+                if program(seccion):
+                    estado = 2
+                else:
+                    return False
+            elif seccion[0:5] == ".text":
+                if text(seccion):
+                    estado = 2
+                else:
+                    return False
+            elif seccion[0:6] == ".const":
+                if const(seccion):
+                    estado = 2
+                else:
+                    return False
+            else:
+                return False
+
+        elif estado == 2:
+            if seccion[0:8] == ".program":
+                if program(seccion):
+                    estado = 3
+                else:
+                    return False
+            elif seccion[0:5] == ".text":
+                if text(seccion):
+                    estado = 3
+                else:
+                    return False
+            elif seccion[0:6] == ".const":
+                if const(seccion):
+                    estado = 3
+                else:
+                    return False
+            else:
+                return False
+            
+        elif estado == 3:
+            if seccion[0:8] == ".program":
+                if program(seccion):
+                    estado = 4
+                else:
+                    return False
+            elif seccion[0:5] == ".text":
+                if text(seccion):
+                    estado = 4
+                else:
+                    return False
+            elif seccion[0:6] == ".const":
+                if const(seccion):
+                    estado = 4
+                else:
+                    return False
+            else:
+                return False
+            
+        elif estado == 4:
+            if seccion[0:8] == ".program":
+                if program(seccion):
+                    estado = 4
+                else:
+                    return False
+            elif seccion[0:5] == ".text":
+                if text(seccion):
+                    estado = 4
+                else:
+                    return False
+            elif seccion[0:6] == ".const":
+                if const(seccion):
+                    estado = 4
+                else:
+                    return False
+            else:
+                return False
+            
+        if estado == 4:
+            return True
+        else:
             
