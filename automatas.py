@@ -279,66 +279,80 @@ def comando(cadena):
         return False
 
 
-#Instrucción de dos registros (Fabrizio)
 def insDosReg(cadena):
-    estado=1
-    punt=0
+    estado = 1
+    punt = 0
+    par=False
     for i in range(len(cadena)):
-        if estado==1:
-            if cadena[0:2]=="ld" or cadena[0:2]=="st":
-                estado=2
+        if estado == 1:
+            if cadena[0:2] == "ld" or cadena[0:2] == "st":
+                estado = 2
             else:
                 return False
-        elif estado==2:
-            if cadena[2]==" ":
-                estado=3
+        elif estado == 2:
+            if cadena[2] == " ":
+                estado = 3
             else:
                 return False
-        elif estado==3:
+        elif estado == 3:
             pos = 3
-            while pos<len(cadena):
-                if cadena[pos]==",":
+            while pos < len(cadena):
+                if cadena[pos] == ",":
                     break
-                pos+=1
-            punt=pos
+                pos += 1
+            punt = pos
             if registro(cadena[3:pos]):
-                estado=4
+                estado = 4
             else:
                 return False
-        elif estado==4:
-            if cadena[punt]==",":
-                estado=5
-                punt+=1
+        elif estado == 4:
+            if cadena[punt] == ",":
+                estado = 5
+                punt += 1
             else:
                 return False
-        elif estado==5:
-            pos=punt
-            posible=false
-            while pos<len(cadena):
-                if cadena[pos]=="(":
+        elif estado == 5:
+            pos = punt
+            posible = False
+            while pos < len(cadena):
+                if cadena[pos] == "(":
+                    posible = True
+                    par=True
                     break
-                    posible=true
-                pos+=1
-            if posible==true:
+                pos += 1
+            if posible == True:
                 if caracter(cadena[punt:pos]):
-                    punt=pos+1
-                    estado=6
+                    punt = pos + 1
+                    estado = 6
             else:
-                estado=6
-        elif estado==6:
+                estado = 6
+        elif estado == 6:
+            cierre=False
             pos = punt
             while pos < len(cadena):
-                if cadena[pos] == ")": #posible error de indices
+                if cadena[pos] == ")":  # posible error de indices
+                    cierre=True
                     break
                 pos += 1
             if registro(cadena[punt:pos]):
-                estado=7
+                if (par==True and cierre==True) or (par==False and cierre==False):
+                    if cierre==True:
+                        print(cadena[:])
+                        print(cadena[:pos+1])
+                        if cadena[:]==cadena[:pos+1]:
+                            estado=7
+                        else:
+                            return False
+                    else:
+                        estado=7
+                else:
+                    return False
             else:
                 return False
-    if estado==7:
-        return true
-
-    # Instrucción de registros variables (Fabrizio)
+    if estado == 7:
+        return True
+    else:
+        return False
 
 
 def insRegVar(cadena):
@@ -375,12 +389,15 @@ def insRegVar(cadena):
             else:
                 return False
         elif estado == 4:
+            print("Puta bida")
             pos = punt
             while pos < len(cadena):
                 if cadena[pos] == ",":
                     break
                 pos += 1
-            if registro(cadena[punt:pos]):
+            var=(cadena[punt:pos])
+            print(var[0])
+            if registro(var):
                 punt = pos + 1
                 estado = 6
             else:
@@ -399,13 +416,13 @@ def insRegVar(cadena):
                 estado = 8
         elif estado == 5:
             pos = punt
-            const = false
+            const = False
             while pos < len(cadena):
                 if cadena[pos] == "(":
                     break
-                    const = true
+                    const = True
                 pos += 1
-            if const == false:
+            if const == False:
                 if registro(cadena[punt:]):
                     estado = 8
                 else:
@@ -421,7 +438,7 @@ def insRegVar(cadena):
             if registros(cadena[punt:]):
                 estado = 8
             else:
-                return false
+                return False
     if estado == 8:
         return True
     else:
@@ -436,6 +453,7 @@ def insRegVar(cadena):
 
 
 def registro(cadena):
+    print(cadena[0])
     estado = 1
     if cadena[0] == "R":
         estado = 2
@@ -449,7 +467,6 @@ def registro(cadena):
             if estado == 2:
                 if cadena[1] == "1":
                     estado = 3
-
                     if estado == 3:
                         if numeros_5(cadena[2]):
                             estado = 3
@@ -459,10 +476,11 @@ def registro(cadena):
                         return False
                 else:
                     return False
+        else:
+            return False
 
     if estado == 2 or estado == 3:
         return True
-
     else:
         return False
 
@@ -486,7 +504,7 @@ def numeros_5(caracter):
     else:
         return False
 
-def text(caracter)
+def text(caracter):
 
     lista = caracter.splitlines()
     estado = 0
@@ -500,15 +518,12 @@ def text(caracter)
                 return False
             estado == 1
             i += 1
-
         if (estado == 1 or  estado == 2) and len(lista[i]) > 0:
-
             estado = 1
-
             if  lista[i][-1] == ':':
-                if !operacion(lista[i].lstrip('\t' ))):
+                if operacion(lista[i].lstrip('\t'))==False:
                     return False
-            elif !comando(lista[i].lstrip('\t' ))):
+            elif comando(lista[i].lstrip('\t'))==False:
                 return False
 
             estado = 2
@@ -610,4 +625,81 @@ def programa(lista):
         if estado == 4:
             return True
         else:
+            return False
+
             
+def insDosReg(cadena):
+    estado = 1
+    punt = 0
+    par=False
+    for i in range(len(cadena)):
+        if estado == 1:
+            if cadena[0:2] == "ld" or cadena[0:2] == "st":
+                estado = 2
+            else:
+                return False
+        elif estado == 2:
+            if cadena[2] == " ":
+                estado = 3
+            else:
+                return False
+        elif estado == 3:
+            pos = 3
+            while pos < len(cadena):
+                if cadena[pos] == ",":
+                    break
+                pos += 1
+            punt = pos
+            if registro(cadena[3:pos]):
+                estado = 4
+            else:
+                return False
+        elif estado == 4:
+            if cadena[punt] == ",":
+                estado = 5
+                punt += 1
+            else:
+                return False
+        elif estado == 5:
+            pos = punt
+            posible = False
+            while pos < len(cadena):
+                if cadena[pos] == "(":
+                    posible = True
+                    par=True
+                    break
+                pos += 1
+            if posible == True:
+                if caracter(cadena[punt:pos]):
+                    punt = pos + 1
+                    estado = 6
+            else:
+                estado = 6
+        elif estado == 6:
+            cierre=False
+            pos = punt
+            while pos < len(cadena):
+                if cadena[pos] == ")":  # posible error de indices
+                    cierre=True
+                    break
+                pos += 1
+            if registro(cadena[punt:pos]):
+                if (par==True and cierre==True) or (par==False and cierre==False):
+                    if cierre==True:
+                        print(cadena[:])
+                        print(cadena[:pos+1])
+                        if cadena[:]==cadena[:pos+1]:
+                            estado=7
+                        else:
+                            return False
+                    else:
+                        estado=7
+                else:
+                    return False
+            else:
+                return False
+    if estado == 7:
+        return True
+    else:
+        return False
+
