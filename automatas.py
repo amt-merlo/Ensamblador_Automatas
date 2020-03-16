@@ -232,30 +232,31 @@ def letras_F(caracter):
         return False
 
 
-def operacion(cadena):
-    estado=1
-    punt=0
-    for i in range(0,len(cadena)):
-        if estado==1:
-            pos==punt
-            while(pos<len(cadena)):
-                if cadena[pos]==":":
-                    break
-                pos+=1
-            if caracter(cadena[:pos]):
-                estado=2
-                punt=pos+1
+def operacion(cad):
+    estado = 1
+    cadena = cad.split("\t")
+    patron = re.compile('.+:')
+
+    for i in range(len(cadena)):
+        if estado == 1:
+            if patron.fullmatch(cadena[0]):
+                estado = 2
             else:
                 return False
-        if estado==2:
-            if(comando(cadena[punt:])):
-                estado=3
-            else:
-                return False
-    if estado==3:
+
+        elif estado == 2:
+            if i !=0  and cadena[i]!="":
+                if comando(cadena[i]):
+                    
+                    estado = 2
+                else:
+                    return False
+        
+    if estado == 2:
         return True
     else:
         return False
+
 
 
 def comando(cadena):
@@ -511,12 +512,11 @@ def text(caracter):
         if estado == 0:
             if lista[0] != '.text':
                 return False
-            estado == 1
+            estado = 1
             i += 1
         if (estado == 1 or  estado == 2) and len(lista[i]) > 0:
             estado = 1
             if  lista[i][-1] == ':':
-
                 cont = i + 1
 
                 while(True):
@@ -527,9 +527,10 @@ def text(caracter):
 
                     else:
                         break
-
                 if operacion(lista[i].lstrip('\t'))==False:
+                    
                     return False
+            
             elif comando(lista[i].lstrip('\t'))==False:
                 return False
 
@@ -550,7 +551,6 @@ def ecuentraTabs(caracter):
 
     i = 0
     for i in range(len(caracter)) :
-        print(caracter[i:i+1] + " aquí")
 
         if caracter[i:i+1] == "\t":
             cont += 1
