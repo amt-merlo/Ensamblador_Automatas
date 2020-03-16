@@ -337,8 +337,6 @@ def insDosReg(cadena):
             if registro(cadena[punt:pos]):
                 if (par==True and cierre==True) or (par==False and cierre==False):
                     if cierre==True:
-                        print(cadena[:])
-                        print(cadena[:pos+1])
                         if cadena[:]==cadena[:pos+1]:
                             estado=7
                         else:
@@ -389,53 +387,50 @@ def insRegVar(cadena):
             else:
                 return False
         elif estado == 4:
-            print("Puta bida")
             pos = punt
             while pos < len(cadena):
                 if cadena[pos] == ",":
                     break
                 pos += 1
-            var=(cadena[punt:pos])
-            print(var[0])
-            if registro(var):
+            if registro(cadena[punt:pos]):
                 punt = pos + 1
                 estado = 6
             else:
                 return False
         elif estado == 6:
-            if [punt + 1] != "":
+            if cadena[:punt]!=cadena[:]:
                 pos = punt
                 while pos < len(cadena):
                     pos += 1
-                if registro(cadena[punt:]):
+                if registro(cadena[punt:pos]):
                     punt = pos
                     estado = 8
                 else:
                     return False
-            else:
+            if True:
                 estado = 8
         elif estado == 5:
             pos = punt
             const = False
             while pos < len(cadena):
-                if cadena[pos] == "(":
-                    break
+                if cadena[pos] == ",":
                     const = True
+                    break
                 pos += 1
-            if const == False:
-                if registro(cadena[punt:]):
-                    estado = 8
+            if const == True:
+                if registro(cadena[punt:pos]):
+                    estado = 7
+                    punt=pos+1
                 else:
                     return False
             else:
                 if caracter(cadena[punt:pos]):
-                    punt = pos + 1
-                    estado = 7
+                    estado=8
                 else:
                     return False
 
         elif estado == 7:
-            if registros(cadena[punt:]):
+            if caracter(cadena[punt:]):
                 estado = 8
             else:
                 return False
@@ -453,7 +448,6 @@ def insRegVar(cadena):
 
 
 def registro(cadena):
-    print(cadena[0])
     estado = 1
     if cadena[0] == "R":
         estado = 2
