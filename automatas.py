@@ -504,8 +504,9 @@ def text(caracter):
     estado = 0
 
     i = 0
+    rango = len(lista)
 
-    for i in range(len(lista)):
+    while i < rango:
 
         if estado == 0:
             if lista[0] != '.text':
@@ -515,13 +516,25 @@ def text(caracter):
         if (estado == 1 or  estado == 2) and len(lista[i]) > 0:
             estado = 1
             if  lista[i][-1] == ':':
+
+                cont = i + 1
+
+                while(True):
+                    if ecuentraTabs(lista[cont]) == 2:
+                        lista[i] = lista[i] + lista.pop(cont)
+                        cont += 1
+                        rango -= 1
+
+                    else:
+                        break
+
                 if operacion(lista[i].lstrip('\t'))==False:
                     return False
             elif comando(lista[i].lstrip('\t'))==False:
                 return False
 
             estado = 2
-            
+
             i += 1
 
         else:
@@ -531,6 +544,19 @@ def text(caracter):
         return True
     else:
         return False
+
+def ecuentraTabs(caracter):
+    cont = 0
+
+    i = 0
+    for i in range(len(caracter)) :
+        print(caracter[i:i+1] + " aquí")
+
+        if caracter[i:i+1] == "\t":
+            cont += 1
+
+    return cont
+
 
 
 #programa que revisa .text, .const y .program (Allison)
