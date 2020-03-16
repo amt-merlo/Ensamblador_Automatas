@@ -233,6 +233,7 @@ def letras_F(caracter):
 
 
 def operacion(cad):
+    
     estado = 1
     cadena = cad.split("\t")
     patron = re.compile('.+:')
@@ -247,7 +248,6 @@ def operacion(cad):
         elif estado == 2:
             if i !=0  and cadena[i]!="":
                 if comando(cadena[i]):
-                    
                     estado = 2
                 else:
                     return False
@@ -259,22 +259,30 @@ def operacion(cad):
 
 
 
-def comando(cadena):
+def comando(cad):
+    cadena = cad.rstrip(" ")
     estado=1
-    i=3
+    i=4
     while i>0:
         if estado==1:
+
             if insDosReg(cadena):
-                estado=3
+                estado=4
             else:
                 estado=2
         elif estado==2:
             if insRegVar(cadena):
-                estado=3
+                estado=4
+            else:
+                estado = 3
+        elif estado == 3:
+            if insjumpTest(cadena):
+                estado = 4
             else:
                 return False
+            
         i-=1
-    if estado==3:
+    if estado==4:
         return True
     else:
         return False
@@ -528,10 +536,11 @@ def text(caracter):
                     else:
                         break
                 if operacion(lista[i].lstrip('\t'))==False:
-                    
+                    print("****")
                     return False
             
             elif comando(lista[i].lstrip('\t'))==False:
+                
                 return False
 
             estado = 2
@@ -706,8 +715,6 @@ def insDosReg(cadena):
             if registro(cadena[punt:pos]):
                 if (par==True and cierre==True) or (par==False and cierre==False):
                     if cierre==True:
-                        print(cadena[:])
-                        print(cadena[:pos+1])
                         if cadena[:]==cadena[:pos+1]:
                             estado=7
                         else:
@@ -723,3 +730,38 @@ def insDosReg(cadena):
     else:
         return False
 
+
+def insjumpTest(cadena):
+    estado=1
+    punt=0
+    for i in range(len(cadena)):
+        if estado==1:
+            if cadena[0:6]=="testl ":
+                estado=2
+            elif cadena[0:4]=="jmp ":
+                estado=3
+            else:
+                return False
+        elif estado==3:
+            if caracter(cadena[5:]):
+                estado=5
+        elif estado==2:
+            pos = 6
+            while pos < len(cadena):
+                if cadena[pos] == ",":
+                    break
+                pos += 1
+            punt=pos+1
+            if registro(cadena[6:pos]):
+                estado=4
+            else:
+                return False
+        elif estado==4:
+            if registro(cadena[punt:]):
+                estado=5
+            else:
+                return False
+    if estado==5:
+        return True
+    else:
+        return False
