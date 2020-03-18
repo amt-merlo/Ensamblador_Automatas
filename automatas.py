@@ -3,31 +3,28 @@ import re
 
 # .program (Allison)
 def program(cadena):
+    lista=cadena.splitlines()
     estado = 1
-    for i in range(0, len(cadena)):
-        actual = cadena[i]
-
+    for i in range(-2, len(lista)):
         if estado == 1:
-            if cadena[0:8] == ".program":
+            if lista[0][0:8] == ".program":
                 estado = 2
             else:
                 return False
-
         elif estado == 2:
-            print(cadena[8])
-            if cadena[8] == " ":
+            if lista[0][8] == " ":
                 estado = 3
             else:
                 return False
-
         elif estado == 3:
-            for i in range(9, len(cadena)):
-                print(cadena[i])
-                if caracter(cadena[i]):
+            for i in range(9, len(lista[0])):
+                if caracter(lista[0][i]):
                     estado = 4
                 else:
                     return False
-
+        elif estado==4:
+            if lista[i]!="":
+                return False
     if estado == 4:
         return True
     else:
@@ -98,12 +95,12 @@ def letras(cadena):
         actual=cadena[i]
 
         if estado == 1:
-            if str.isalpha(actual) or actual == "_":
+            if str.isalpha(actual) or actual == "_" or actual == " ":
                 estado = 2
             else:
                 return False
         elif estado == 2:
-            if str.isalpha(actual) or actual == "_":
+            if str.isalpha(actual) or actual == "_" or actual == " ":
                 estado=2
             else:
                 return False
@@ -114,41 +111,65 @@ def letras(cadena):
 
 
 def seccionConst(cadena):
+    lista = cadena.splitlines()
     estado = 1
-    for i in range(0, len(cadena)):
-
+    punt=0
+    i=0
+    while i < len(lista):
         if estado == 1:
-            if cadena[0:6] == ".const":
+            if lista[0][0:6] == ".const":
                 estado = 2
+                if len(lista)==1:
+                    return True
             else:
                 return False
-
         elif estado == 2:
-            if not caracter(cadena[7]):
-                return False
-            for x in range(i, len(cadena)):
-                if cadena[x] == "=":
-                    igual = x + 1
-                    estado = 3
-
-                if "=" not in cadena:
+            if len(lista[0]) != 6:
+                punt=7
+                pos=punt
+                while pos<len(lista[0]):
+                    if lista[0][pos]== "=":
+                        break
+                    pos+=1
+                if caracter(lista[0][7:pos].lstrip("\t")):
+                    punt=pos+1
+                    if lista[0][punt] == " ":
+                        punt += 1
+                    if numeros(lista[0][punt:].lstrip("\t")) or hexadecimal(lista[0][punt:].lstrip("\t")):
+                        estado=3
+                        i+=1
+                    else:
+                        return False
+                else:
                     return False
-
+            else:
+                estado=3
+                i+=1
         elif estado == 3:
-            if numeros(cadena[igual:len(cadena) + 1]):
-                estado = 3
-            elif hexadecimal(cadena[igual:len(cadena) + 1]):
-                estado = 4
-            else:
-                return False
-
-
-        elif estado == 4:
-            if hexadecimal(cadena[igual:len(cadena) + 1]):
-                estado = 4
-            else:
-                return False
-    if estado == 3 or estado == 4:
+            j=1
+            while j<len(lista):
+                punt = 0
+                pos = punt
+                if lista[j]!="":
+                    while pos < len(lista[j]):
+                        if lista[j][pos] == "=":
+                            break
+                        pos += 1
+                    if caracter(lista[j][punt:pos].lstrip("\t")):
+                        punt = pos + 1
+                        if lista[j][punt]==" ":
+                            punt+=1
+                        if numeros(lista[j][punt:].lstrip("\t")) or hexadecimal(lista[j][punt:].lstrip("\t")):
+                            estado = 4
+                        else:
+                            return False
+                    else:
+                        return False
+                j+=1
+            i+=1
+        else:
+            i+=1
+    if estado == 4:
         return True
     else:
         return False
@@ -165,33 +186,28 @@ def numeros_0(caracter):
 
 def hexadecimal(cadena):
     estado = 1
-    for i in range(2, len(cadena)):
-        actual = cadena[i]
-
-        if estado == 1:
-            if cadena[0:2] == "0x":
-                estado = 2
-            else:
-                return False
-
-        elif estado == 2:
-            if numeros(actual):
-                estado = 2
-
-            elif letras_F(actual):
-                estado = 3
-
-            else:
-                return False
-        elif estado == 3:
-            if numeros(actual):
-                estado = 2
-
-            elif letras_F(actual):
-                estado = 3
-            else:
-                return False
-
+    if estado == 1:
+        if cadena[0:2] == "0x":
+            estado = 2
+        else:
+            return False
+    if estado == 2:
+        for i in range(2,len(cadena)):
+            actual = cadena[i]
+            if estado == 2:
+                if numeros(actual):
+                    estado = 2
+                elif letras_F(actual):
+                    estado = 3
+                else:
+                    return False
+            elif estado == 3:
+                if numeros(actual):
+                    estado = 2
+                elif letras_F(actual):
+                    estado = 3
+                else:
+                    return False
     if estado == 2 or estado == 3:
         return True
     else:
@@ -210,17 +226,7 @@ def letras_F(caracter):
         if letras(caracter):
             listaLetras = ["A", "B", "C", "D", "E", "F", "a", "b", "c", "d", "e", "f"]
             if caracter in listaLetras:
-                estado == 2
-            else:
-                return False
-        else:
-            return False
-
-    elif estado == 2:
-        if letras(caracter):
-            listaLetras = ["A", "B", "C", "D", "E", "F", "a", "b", "c", "d", "e", "f"]
-            if caracter in listaLetras:
-                estado == 2
+                estado = 2
             else:
                 return False
         else:
@@ -508,7 +514,6 @@ def numeros_5(caracter):
         return False
 
 def text(caracter):
-
     lista = caracter.splitlines()
     estado = 0
 
@@ -516,10 +521,11 @@ def text(caracter):
     rango = len(lista)
 
     while i < rango:
-
         if estado == 0:
             if lista[0] != '.text':
                 return False
+            if len(lista)==1:
+                return True
             estado = 1
             i += 1
         if (estado == 1 or  estado == 2) and len(lista[i]) > 0:
@@ -527,16 +533,14 @@ def text(caracter):
             if  lista[i][-1] == ':':
                 cont = i + 1
 
-                while(True):
+                while(cont<len(lista)):
                     if ecuentraTabs(lista[cont]) == 2:
                         lista[i] = lista[i] + lista.pop(cont)
                         cont += 1
                         rango -= 1
-
                     else:
                         break
                 if operacion(lista[i].lstrip('\t'))==False:
-                    print("****")
                     return False
             
             elif comando(lista[i].lstrip('\t'))==False:
@@ -548,6 +552,7 @@ def text(caracter):
             i += 1
 
         else:
+            estado=2
             i += 1
 
     if estado == 2:
@@ -572,9 +577,7 @@ def ecuentraTabs(caracter):
 
 def programa(lista):
     estado = 1
-
     for seccion in lista:
-
         if estado == 1:
             if seccion[0:8] == ".program":
                 if program(seccion):
@@ -587,7 +590,7 @@ def programa(lista):
                 else:
                     return False
             elif seccion[0:6] == ".const":
-                if const(seccion):
+                if seccionConst(seccion):
                     estado = 2
                 else:
                     return False
@@ -606,7 +609,7 @@ def programa(lista):
                 else:
                     return False
             elif seccion[0:6] == ".const":
-                if const(seccion):
+                if seccionConst(seccion):
                     estado = 3
                 else:
                     return False
@@ -625,13 +628,12 @@ def programa(lista):
                 else:
                     return False
             elif seccion[0:6] == ".const":
-                if const(seccion):
+                if seccionConst(seccion):
                     estado = 4
                 else:
                     return False
             else:
                 return False
-            
         elif estado == 4:
             if seccion[0:8] == ".program":
                 if program(seccion):
@@ -644,17 +646,17 @@ def programa(lista):
                 else:
                     return False
             elif seccion[0:6] == ".const":
-                if const(seccion):
+                if seccionConst(seccion):
                     estado = 4
                 else:
                     return False
             else:
                 return False
             
-        if estado == 4:
-            return True
-        else:
-            return False
+    if estado == 4:
+        return True
+    else:
+        return False
 
             
 def insDosReg(cadena):
