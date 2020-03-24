@@ -1,6 +1,6 @@
 import re
 
-tablaSimbolos=[[],[]]
+tablaSimbolos={}
 
 # .program (Allison)
 def program(cadena):
@@ -133,12 +133,12 @@ def seccionConst(cadena):
                         break
                     pos+=1
                 if caracter(lista[0][7:pos].lstrip("\t")):
+                    llave=lista[0][7:pos].lstrip("\t")
                     punt=pos+1
-                    tablaSimbolos[0].append(lista[0][7:pos].lstrip("\t"))
                     if lista[0][punt] == " ":
                         punt += 1
                     if numeros(lista[0][punt:].lstrip("\t")) or hexadecimal(lista[0][punt:].lstrip("\t")):
-                        tablaSimbolos[1].append(lista[0][punt:].lstrip("\t"))
+                        tablaSimbolos[llave]=lista[0][punt:].lstrip("\t")
                         estado=3
                         i+=1
                     else:
@@ -159,12 +159,12 @@ def seccionConst(cadena):
                             break
                         pos += 1
                     if caracter(lista[j][punt:pos].lstrip("\t")):
-                        tablaSimbolos[0].append(lista[j][punt:pos].lstrip("\t"))
+                        llave=lista[j][punt:pos].lstrip("\t")
                         punt = pos + 1
                         if lista[j][punt]==" ":
                             punt+=1
                         if numeros(lista[j][punt:].lstrip("\t")) or hexadecimal(lista[j][punt:].lstrip("\t")):
-                            tablaSimbolos[1].append(lista[j][punt:].lstrip("\t"))
+                            tablaSimbolos[llave]=lista[j][punt:].lstrip("\t")
                             estado = 4
                         else:
                             return False
