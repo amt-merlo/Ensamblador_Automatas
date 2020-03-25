@@ -61,7 +61,7 @@ def caracter(cadena):
                 estado = 3
             else:
                 return False
-    if estado is not 1:
+    if estado != 1:
         return True
     else:
         return False
