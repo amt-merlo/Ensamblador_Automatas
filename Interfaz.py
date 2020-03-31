@@ -1,6 +1,7 @@
 #Librerias necesarias para que funcione el algoritmo
 from tkinter.filedialog import *
 from tkinter import *
+from tkinter import messagebox
 import tkinter.font as tkFont
 from PIL import ImageTk,Image
 from preproceso import *
@@ -87,6 +88,7 @@ def restart():
     botonRevisar["state"]=DISABLED
     botonTraducir["state"]=DISABLED
     dirEntrada.config(state=NORMAL)
+    
 
 
 
@@ -94,11 +96,20 @@ def restart():
 def Revisar():
     global app, path, secciones
     secciones= procesarTXT(path)
-    if programa(secciones):
+    if esPrograma(secciones):
         botonTraducir["state"]=NORMAL
+        messagebox.showinfo(title="EXITOSO", message= "Archivo revisado \n correctamente")
+        botonTraducir.config(command=Traducir)
+    else:
+        messagebox.showerror(title="ERROR", message= "El archivo no es válido")
+
         
 ##Funcion de traducir
-#def Traducir():
+def Traducir():
+    global app, path, secciones, linea
+    if programa(secciones):
+        msg="¡Traducción exitosa!"
+        messagebox.showinfo(title="REALIZADO", message=msg)
 
 
 

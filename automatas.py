@@ -1,9 +1,11 @@
 import re
+from tkinter import messagebox
 
 tablaSimbolos={}
-
+linea=1
 # .program (Allison)
 def program(cadena):
+    global linea
     lista=cadena.splitlines()
     estado = 1
     for i in range(-2, len(lista)):
@@ -27,6 +29,7 @@ def program(cadena):
             if lista[i]!="":
                 return False
     if estado == 4:
+        linea+=1
         return True
     else:
         return False
@@ -112,6 +115,7 @@ def letras(cadena):
 
 
 def seccionConst(cadena):
+    global linea
     lista = cadena.splitlines()
     estado = 1
     punt=0
@@ -121,6 +125,7 @@ def seccionConst(cadena):
             if lista[0][0:6] == ".const":
                 estado = 2
                 if len(lista)==1:
+                    linea+=1
                     return True
             else:
                 return False
@@ -141,6 +146,7 @@ def seccionConst(cadena):
                         tablaSimbolos[llave]=lista[0][punt:].lstrip("\t")
                         estado=3
                         i+=1
+                        linea+=1
                     else:
                         return False
                 else:
@@ -148,6 +154,7 @@ def seccionConst(cadena):
             else:
                 estado=3
                 i+=1
+                linea+=1
         elif estado == 3:
             j=1
             while j<len(lista):
@@ -171,10 +178,13 @@ def seccionConst(cadena):
                     else:
                         return False
                 j+=1
+                linea+=1
             i+=1
+            linea+=1
         else:
             i+=1
     if estado == 4:
+        linea+=1
         return True
     else:
         return False
@@ -243,26 +253,26 @@ def letras_F(caracter):
         return False
 
 
-def operacion(cad):
-    
+def operacion(cad):   
+    global linea
     estado = 1
-    cadena = cad.split("\t")
+    cadena = cad.split("\t")   
     patron = re.compile('.+:')
 
     for i in range(len(cadena)):
         if estado == 1:
             if patron.fullmatch(cadena[0]):
+                linea+=1
                 estado = 2
             else:
                 return False
-
+        
         elif estado == 2:
             if i !=0  and cadena[i]!="":
                 if comando(cadena[i]):
                     estado = 2
                 else:
-                    return False
-        
+                    return False      
     if estado == 2:
         return True
     else:
@@ -271,6 +281,7 @@ def operacion(cad):
 
 
 def comando(cad):
+    global linea
     cadena = cad.rstrip(" ")
     estado=1
     i=4
@@ -294,6 +305,7 @@ def comando(cad):
             
         i-=1
     if estado==4:
+        linea+=1
         return True
     else:
         return False
@@ -519,53 +531,54 @@ def numeros_5(caracter):
         return False
 
 def text(caracter):
+    global linea
     lista = caracter.splitlines()
+    
     estado = 0
-
     i = 0
     rango = len(lista)
-
+    
     while i < rango:
         if estado == 0:
             if lista[0] != '.text':
                 return False
+            linea+=1
             if len(lista)==1:
                 return True
             estado = 1
             i += 1
+            
         if (estado == 1 or  estado == 2) and len(lista[i]) > 0:
             estado = 1
             if  lista[i][-1] == ':':
                 cont = i + 1
-
+                
                 while(cont<len(lista)):
-                    if ecuentraTabs(lista[cont]) == 2:
+                    if encuentraTabs(lista[cont]) == 2:
                         lista[i] = lista[i] + lista.pop(cont)
-                        cont += 1
+                        
                         rango -= 1
                     else:
                         break
+                        
                 if operacion(lista[i].lstrip('\t'))==False:
                     return False
-            
+                
             elif comando(lista[i].lstrip('\t'))==False:
                 
                 return False
-
             estado = 2
-
             i += 1
-
         else:
             estado=2
             i += 1
-
     if estado == 2:
+        linea+=1
         return True
     else:
         return False
 
-def ecuentraTabs(caracter):
+def encuentraTabs(caracter):
     cont = 0
 
     i = 0
@@ -582,88 +595,140 @@ def ecuentraTabs(caracter):
 
 def programa(lista):
     estado = 1
+    global linea
+    linea=1
     for seccion in lista:
         if estado == 1:
             if seccion[0:8] == ".program":
                 if program(seccion):
                     estado = 2
                 else:
-                    return False
+                    return ERROR(linea)
             elif seccion[0:5] == ".text":
                 if text(seccion):
                     estado = 2
                 else:
-                    return False
+                    return ERROR(linea)
             elif seccion[0:6] == ".const":
                 if seccionConst(seccion):
                     estado = 2
                 else:
-                    return False
+                    return ERROR(linea)
             else:
-                return False
+                return ERROR(linea)
 
         elif estado == 2:
             if seccion[0:8] == ".program":
                 if program(seccion):
                     estado = 3
                 else:
-                    return False
+                    return ERROR(linea)
             elif seccion[0:5] == ".text":
                 if text(seccion):
                     estado = 3
                 else:
-                    return False
+                    return ERROR(linea)
             elif seccion[0:6] == ".const":
                 if seccionConst(seccion):
                     estado = 3
                 else:
-                    return False
+                    return ERROR(linea)
             else:
-                return False
+                return ERROR(linea)
             
         elif estado == 3:
             if seccion[0:8] == ".program":
                 if program(seccion):
                     estado = 4
                 else:
-                    return False
+                    return ERROR(linea)
             elif seccion[0:5] == ".text":
                 if text(seccion):
                     estado = 4
                 else:
-                    return False
+                    return ERROR(linea)
             elif seccion[0:6] == ".const":
                 if seccionConst(seccion):
                     estado = 4
                 else:
-                    return False
+                    return ERROR(linea)
             else:
-                return False
+                return ERROR(linea)
         elif estado == 4:
             if seccion[0:8] == ".program":
                 if program(seccion):
                     estado = 4
                 else:
-                    return False
+                    return ERROR(linea)
             elif seccion[0:5] == ".text":
                 if text(seccion):
                     estado = 4
                 else:
-                    return False
+                    return ERROR(linea)
             elif seccion[0:6] == ".const":
                 if seccionConst(seccion):
                     estado = 4
                 else:
-                    return False
+                    return ERROR(linea)
+            else:
+                return ERROR(linea)
+            
+    if estado == 4:
+        return True
+    else:
+        return ERROR(linea)
+    
+##Funcion para revisar que un texto sea un programa
+def esPrograma(lista):
+    estado = 1
+    for seccion in lista:
+        if estado == 1:
+            if ".program" in seccion:
+                estado = 2
+            elif ".text" in seccion:
+                estado = 2
+            elif ".const" in seccion:
+                estado = 2
             else:
                 return False
+
+        elif estado == 2:
+            if ".program" in seccion:
+                estado = 3
+            elif ".text" in seccion:
+                estado = 3
+            elif ".const" in seccion:
+                estado = 3
+            else:
+                return False
+            
+        elif estado == 3:
+            if ".program" in seccion:
+                estado = 4
+            elif ".text" in seccion:
+                estado = 4
+            elif ".const" in seccion:
+                estado = 4
+            else:
+                return False
+        elif estado == 4:
+            if ".program" in seccion:
+                estado = 4
+            elif ".text" in seccion:
+                estado = 4
+            elif ".const" in seccion:
+                estado = 4
+            else:
+                return False
+        else:
+            return False
             
     if estado == 4:
         return True
     else:
         return False
 
-            
+    
 def insDosReg(cadena):
     estado = 1
     punt = 0
@@ -772,3 +837,10 @@ def insjumpTest(cadena):
         return True
     else:
         return False
+
+##Ventana de error de sintaxis
+
+def ERROR(indice):
+    
+    msg="Error de sintaxis en la línea "+ str(indice)
+    messagebox.showwarning(title="ERROR", message=msg)
