@@ -262,6 +262,7 @@ def operacion(cad):
     for i in range(len(cadena)):
         if estado == 1:
             if patron.fullmatch(cadena[0]):
+                tablaSimbolos[cadena[0]]=linea
                 linea+=1
                 estado = 2
             else:
