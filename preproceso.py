@@ -41,8 +41,8 @@ def procesarTXT(path):
     cadena = ''
 
     lista = leerTXT(path) #abre el txt y lo separa por líneas
-    sinComentarios = removeComents(lista) #quita comentarios
-    listaFinal = removeBlanks(sinComentarios) #quita las líneas vacías
+    listaFinal = removeComents(lista) #quita comentarios
+    
 
     for x in listaFinal: #concatena de nuevo el txt 
         cadena+=x
