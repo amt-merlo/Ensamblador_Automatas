@@ -142,11 +142,16 @@ def seccionConst(cadena):
                     punt=pos+1
                     if lista[0][punt] == " ":
                         punt += 1
-                    if numeros(lista[0][punt:].lstrip("\t")) or hexadecimal(lista[0][punt:].lstrip("\t")):
+                    if numeros(lista[0][punt:].lstrip("\t")):
                         tablaSimbolos[llave]=lista[0][punt:].lstrip("\t")
                         estado=3
                         i+=1
                         linea+=1
+                    elif hexadecimal(lista[0][punt:].lstrip("\t")):
+                        tablaSimbolos[llave] = int(lista[0][punt+2:].lstrip("\t"), 16)
+                        estado = 3
+                        i += 1
+                        linea += 1
                     else:
                         return False
                 else:
