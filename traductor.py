@@ -87,8 +87,12 @@ def valorConst(registro):
     
     #pregunta si ya fue definida
     if constante not in tabla:
-        print("La constante no ha sido definida.")
-        binFinal = '000000'
+        if constante.isdigit():
+            binario = bin(int(constante))
+            binFinal = binario[2:]
+        else:
+            print("La constante no ha sido definida.")
+            binFinal = '000000'
     else:
         valor = int(tabla[constante])
         binario = bin(valor)
@@ -176,7 +180,6 @@ def tipoJ(codInstruccion, registros):
 
 def sacarInstrucciones(seccioness):
     lista = seccioness.splitlines()
-    print(lista)
     listaFinal = []
     i = 1
     rango = len(lista)
@@ -206,7 +209,6 @@ def sacarInstrucciones(seccioness):
                 comando = lista[i].lstrip('\t')
                 listaFinal.append(comando)
         i+=1
-    print(listaFinal)
     return listaFinal
 
 
@@ -245,7 +247,7 @@ def traductor(secciones):
     return final
 
 
-print(traductor(['.program Primer ejemplo\n\n\n\n', '.const a = 28\n\tb = 0x2C3\n', '.text\n\n\n\tciclo_infinito:\n\t\tld R1,a(R0) \n\t\tld R2,b(R1)\n\t\tld R3,b(R2) \n\t\tadd R4,R3,R2\n\t\tand R4,R4,R2\n\tst R4,a(R0)\t\n']))
+print(traductor(['.program Primer ejemplo\n\n\n\n', '.const a = 28\n\tb = 3\n', '.text\n\n\n\tciclo_infinito:\n\t\tld R1,32(R0) \n\t\tld R2,b(R1)\n\t\tld R3,b(R2) \n\t\tadd R4,R3,R2\n\t\tand R4,R4,R2\n\tst R4,a(R0)\t\n']))
 
 
 
