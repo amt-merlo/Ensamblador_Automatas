@@ -286,8 +286,12 @@ def operacion(cad):
 
 
 
-def comando(cad):
+def comando(cadena):
     global linea
+    cad2=cadena.rstrip('\n')
+    cad=cad2.rstrip('\t')
+    if len(cad)==0:
+        return True
     cadena = cad.rstrip(" ")
     estado=1
     i=4
@@ -570,8 +574,9 @@ def text(caracter):
                 if operacion(lista[i].lstrip('\t'))==False:
                     return False
                 
+                print(lista[i].lstrip('\t'))
             elif comando(lista[i].lstrip('\t'))==False:
-                
+                print("me cago en todo")
                 return False
             estado = 2
             i += 1

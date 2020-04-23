@@ -1,5 +1,4 @@
 from automatas import *
-from Interfaz import *
 
 var = "add R4,R3,a(R2)"
 var2 = "st R4, a(R0)"
@@ -214,7 +213,7 @@ def sacarInstrucciones(seccioness):
 
 
 ###FINAL###
-def traductor(secciones):
+def traducir(secciones):
     contador = 0
     text = ''
     final = ''
@@ -247,7 +246,7 @@ def traductor(secciones):
     return final
 
 
-print(traductor(['.program Primer ejemplo\n\n\n\n', '.const a = 28\n\tb = 3\n', '.text\n\n\n\tciclo_infinito:\n\t\tld R1,32(R0) \n\t\tld R2,b(R1)\n\t\tld R3,b(R2) \n\t\tadd R4,R3,R2\n\t\tand R4,R4,R2\n\tst R4,a(R0)\t\n']))
+#print(amigo(['.program Primer ejemplo\n\n\n\n', '.const a = 28\n\tb = 3\n', '.text\n\n\n\tciclo_infinito:\n\t\tld R1,32(R0) \n\t\tld R2,b(R1)\n\t\tld R3,b(R2) \n\t\tadd R4,R3,R2\n\t\tand R4,R4,R2\n\tst R4,a(R0)\t\n']))
 
 
 

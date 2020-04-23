@@ -5,6 +5,7 @@ from tkinter import messagebox
 import tkinter.font as tkFont
 from PIL import ImageTk,Image
 from preproceso import *
+from traductor import traducir
 from automatas import *
 
 #Variables globales
@@ -27,7 +28,7 @@ helv36 = tkFont.Font(family="Helvetica",size=22,weight="bold")
 
 #Imagen de fondo
 canvas=Canvas(app,width=800,heigh=500)
-image=ImageTk.PhotoImage(Image.open("C:/Users/kgc20/AppData/Local/Programs/Python/Python38-32/binario.jpg"))
+image=ImageTk.PhotoImage(Image.open("Desktop/binario.jpg"))
 canvas.create_image(0,0,anchor=NW,image=image)
 canvas.pack()
 
@@ -96,6 +97,7 @@ def restart():
 def Revisar():
     global app, path, secciones
     secciones= procesarTXT(path)
+    print("aqui",secciones)
     if esPrograma(secciones):
         botonTraducir["state"]=NORMAL
         messagebox.showinfo(title="EXITOSO", message= "Archivo revisado \n correctamente")
@@ -108,6 +110,7 @@ def Revisar():
 def Traducir():
     global app, path, secciones, linea
     if programa(secciones):
+        print(traducir(secciones))
         msg="¡Traducción exitosa!"
         messagebox.showinfo(title="REALIZADO", message=msg)
 
